@@ -53,13 +53,13 @@
     body[data-theme="mint"] {
       --theme-bg: #ffffff;
       --theme-sub-bg: #ffffff;
-      --theme-primary: #96FFD5;
-      --theme-primary-hover: #96FFD5;
-      --theme-primary-text: #96FFD5;
-      --theme-border: #96FFD5;
-      --theme-accent: #96FFD5;
-      --theme-text: #96FFD5;
-      --theme-shadow: rgba(150, 255, 213, 0.28);
+      --theme-primary: #00FFD4;
+      --theme-primary-hover: #00FFD4;
+      --theme-primary-text: #00FFD4;
+      --theme-border: #00FFD4;
+      --theme-accent: #00FFD4;
+      --theme-text: #00FFD4;
+      --theme-shadow: rgba(0, 255, 212, 0.28);
     }
 
     body[data-theme="soda"] {
@@ -196,7 +196,7 @@
           </div>
           <div>
             <h1 class="text-base font-black tracking-wide flex items-center gap-1.5 theme-text-primary">
-              Gacha Studio <span class="text-[10px] px-2 py-0.5 rounded-full theme-bg-sub theme-text-primary border theme-border font-extrabold">X-SHARE PRO</span>
+              Gacha Studio
             </h1>
           </div>
         </div>
@@ -218,10 +218,10 @@
             <!-- Populated dynamically -->
           </div>
           <select id="themeSelect" onchange="changeTheme(this.value)" class="bg-white border-2 theme-border rounded-xl text-xs font-black px-2 py-1 theme-text-primary focus:outline-none cursor-pointer shadow-xs">
-            <option value="lavender">ゆめかわラベンダー</option>
+            <option value="lavender">ラベンダー</option>
             <option value="red">ストロベリーポップ</option>
             <option value="mint">ミントグリーン</option>
-            <option value="soda">エンジェルソーダ</option>
+            <option value="soda">ソーダブルー</option>
             <option value="orange">マーマレードオレンジ</option>
           </select>
         </div>
@@ -257,7 +257,7 @@
             </span>
             <span id="formTitleText">景品データの登録</span>
           </h2>
-          <div class="flex gap-1 sm:gap-2 shrink-0">
+          <div class="flex gap-1 sm:gap-2 shrink-0 items-center">
             <label class="btn-flat px-2 sm:px-2.5 py-1.5 btn-theme-secondary rounded-xl text-[10px] sm:text-[11px] font-bold cursor-pointer flex items-center gap-1 shadow-xs transition">
               <i class="fa-solid fa-file-import theme-text-primary"></i> <span>CSV読込</span>
               <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="importCSV(event)">
@@ -265,11 +265,14 @@
             <button onclick="exportCSV()" class="btn-flat px-2 sm:px-2.5 py-1.5 btn-theme-secondary rounded-xl text-[10px] sm:text-[11px] font-bold flex items-center gap-1 shadow-xs transition">
               <i class="fa-solid fa-file-export theme-text-primary"></i> <span>CSV保存</span>
             </button>
+            <button onclick="toggleForm()" id="toggleFormBtn" class="btn-flat px-2 py-1.5 btn-theme-secondary rounded-xl text-[11px] font-bold flex items-center justify-center shadow-xs transition" title="表示切り替え">
+              <i class="fa-solid fa-chevron-up" id="toggleFormIcon"></i>
+            </button>
           </div>
         </div>
 
         <!-- Single Item Input Form -->
-        <div class="space-y-3">
+        <div id="formBody" class="space-y-3">
           <div class="flex flex-col sm:flex-row gap-2">
             <select id="singleRarity" class="w-full sm:w-28 theme-bg-sub border-2 theme-border rounded-2xl px-3 py-2 text-xs font-black theme-text-primary focus:outline-none cursor-pointer shadow-xs shrink-0">
               <option value="UR">UR</option>
@@ -475,6 +478,73 @@
     let isAnimating = false;
     let canvas, ctx;
 
+    // Web Audio API による効果音生成
+    let audioCtx = null;
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) {
+          audioCtx = new AudioContext();
+        }
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    // ガチャ回転時のガラガラ効果音
+    function playSpinSound() {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+
+      const startTime = ctx.currentTime;
+      const duration = 1.2;
+      const interval = 0.08;
+
+      for (let t = 0; t < duration; t += interval) {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        const freq = 130 + Math.random() * 220;
+        osc.type = Math.random() > 0.5 ? 'triangle' : 'sine';
+        osc.frequency.setValueAtTime(freq, startTime + t);
+        
+        gain.gain.setValueAtTime(0.12, startTime + t);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + t + 0.06);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(startTime + t);
+        osc.stop(startTime + t + 0.07);
+      }
+    }
+
+    // カプセル排出時のポンッ！効果音
+    function playPopSound() {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(320, now);
+      osc.frequency.exponentialRampToValueAtTime(680, now + 0.12);
+
+      gain.gain.setValueAtTime(0.25, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.22);
+    }
+
     let currentBase64Image = null; 
     let editingItemId = null; 
 
@@ -494,14 +564,14 @@
 
     const THEMES = {
       lavender: {
-        name: 'ゆめかわラベンダー',
+        name: 'ラベンダー',
         dotColor: '#C4B2FF',
         primary: '#C4B2FF',
         accent: '#C4B2FF',
         primaryText: '#C4B2FF',
         light: '#ffffff',
         bgGradient: ['#ffffff', '#ffffff'],
-        capsules: ['#C4B2FF', '#FFB1FC', '#96EFFF', '#96FFD5']
+        capsules: ['#C4B2FF', '#FFB1FC', '#96EFFF', '#00FFD4']
       },
       red: {
         name: 'ストロベリーポップ',
@@ -511,27 +581,27 @@
         primaryText: '#FFB1FC',
         light: '#ffffff',
         bgGradient: ['#ffffff', '#ffffff'],
-        capsules: ['#C4B2FF', '#FFB1FC', '#96EFFF', '#96FFD5']
+        capsules: ['#C4B2FF', '#FFB1FC', '#96EFFF', '#00FFD4']
       },
       mint: {
         name: 'ミントグリーン',
-        dotColor: '#96FFD5',
-        primary: '#96FFD5',
-        accent: '#96FFD5',
-        primaryText: '#96FFD5',
+        dotColor: '#00FFD4',
+        primary: '#00FFD4',
+        accent: '#00FFD4',
+        primaryText: '#00FFD4',
         light: '#ffffff',
         bgGradient: ['#ffffff', '#ffffff'],
-        capsules: ['#C4B2FF', '#FFB1FC', '#96EFFF', '#96FFD5']
+        capsules: ['#C4B2FF', '#FFB1FC', '#96EFFF', '#00FFD4']
       },
       soda: {
-        name: 'エンジェルソーダ',
+        name: 'ソーダブルー',
         dotColor: '#96EFFF',
         primary: '#96EFFF',
         accent: '#96EFFF',
         primaryText: '#96EFFF',
         light: '#ffffff',
         bgGradient: ['#ffffff', '#ffffff'],
-        capsules: ['#C4B2FF', '#FFB1FC', '#96EFFF', '#96FFD5']
+        capsules: ['#C4B2FF', '#FFB1FC', '#96EFFF', '#00FFD4']
       },
       orange: {
         name: 'マーマレードオレンジ',
@@ -541,17 +611,17 @@
         primaryText: '#FFC27A',
         light: '#ffffff',
         bgGradient: ['#ffffff', '#ffffff'],
-        capsules: ['#C4B2FF', '#FFB1FC', '#FFC27A', '#96FFD5']
+        capsules: ['#C4B2FF', '#FFB1FC', '#FFC27A', '#00FFD4']
       }
     };
     let currentThemeKey = 'lavender';
 
     const RARITY_CONFIG = {
-      'UR':  { weight: 1, label: 'UR', badgeBg: '#FFFC67', iconClass: 'fa-solid fa-crown theme-text-primary' },
+      'UR':  { weight: 1, label: 'UR', badgeBg: '#FFC27A', iconClass: 'fa-solid fa-crown theme-text-primary' },
       'SSR': { weight: 5, label: 'SSR', badgeBg: '#FFB1FC', iconClass: 'fa-solid fa-star theme-text-primary' },
       'SR':  { weight: 20, label: 'SR', badgeBg: '#C4B2FF', iconClass: 'fa-solid fa-gem theme-text-primary' },
       'R':   { weight: 35, label: 'R', badgeBg: '#96EFFF', iconClass: 'fa-solid fa-sparkles theme-text-primary' },
-      'N':   { weight: 40, label: 'N', badgeBg: '#96FFD5', iconClass: 'fa-solid fa-cube theme-text-primary' }
+      'N':   { weight: 40, label: 'N', badgeBg: '#00FFD4', iconClass: 'fa-solid fa-cube theme-text-primary' }
     };
 
     function updateGachaTitle(val) {
@@ -723,13 +793,12 @@
           item.rarity = rarity;
           item.name = name;
           item.link = link;
-          item.image = currentBase64Image;
           item.limit = limit;
-          showToast(`${name} を更新しました`);
+          if (currentBase64Image) item.image = currentBase64Image;
         }
-        cancelEdit();
+        showToast('景品データを更新しました！');
       } else {
-        items.push({
+        const newItem = {
           id: 'item_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
           name: name,
           link: link,
@@ -737,18 +806,26 @@
           image: currentBase64Image,
           limit: limit,
           pulledCount: 0
-        });
-        showToast(`${name} を追加しました`);
-        
-        document.getElementById('singleName').value = '';
-        document.getElementById('singleLink').value = '';
-        document.getElementById('singleLimit').value = '';
-        document.getElementById('singleImage').value = ''; 
-        document.getElementById('imageUploadLabel').textContent = '画像選択';
-        currentBase64Image = null;
+        };
+        items.push(newItem);
+        showToast('景品データを追加しました！');
       }
 
+      cancelEdit();
       updateItemListAndStats();
+    }
+
+    function toggleForm() {
+      const formBody = document.getElementById('formBody');
+      const icon = document.getElementById('toggleFormIcon');
+      if (!formBody || !icon) return;
+      if (formBody.classList.contains('hidden')) {
+        formBody.classList.remove('hidden');
+        icon.className = 'fa-solid fa-chevron-up';
+      } else {
+        formBody.classList.add('hidden');
+        icon.className = 'fa-solid fa-chevron-down';
+      }
     }
 
     function editItem(id) {
@@ -756,6 +833,13 @@
       if (!item) return;
       
       editingItemId = id;
+
+      const formBody = document.getElementById('formBody');
+      const icon = document.getElementById('toggleFormIcon');
+      if (formBody && formBody.classList.contains('hidden')) {
+        formBody.classList.remove('hidden');
+        if (icon) icon.className = 'fa-solid fa-chevron-up';
+      }
       
       document.getElementById('singleRarity').value = item.rarity;
       document.getElementById('singleName').value = item.name;
@@ -1127,6 +1211,9 @@
       lastPulledResults = results;
       spinAnimProgress = 0;
 
+      // 回転効果音を再生
+      playSpinSound();
+
       // Spawn dropped capsule
       const themeColors = THEMES[currentThemeKey].capsules;
       droppedCapsule = {
@@ -1135,6 +1222,8 @@
       };
 
       setTimeout(() => {
+        // カプセル排出効果音を再生
+        playPopSound();
         activeEffectType = 'idle';
         isAnimating = false;
         droppedCapsule = null;
@@ -1280,8 +1369,9 @@
         } else {
           // Regular physics
           cap.vy += gravity * 0.3;
-          cap.vx *= 0.98;
-          cap.vy *= 0.98;
+          cap.vx *= 0.92;
+          cap.vy *= 0.92;
+          cap.va *= 0.90;
         }
 
         cap.x += cap.vx;
@@ -1638,7 +1728,7 @@
       oCtx.font = '800 16px "M PLUS Rounded 1c", sans-serif';
       oCtx.textAlign = 'center';
       oCtx.textBaseline = 'bottom';
-      oCtx.fillText('★ Created with Gacha Studio X-SHARE PRO ★', width / 2, height - 20);
+      oCtx.fillText('★ Created with Gacha Studio ★', width / 2, height - 20);
     }
 
     function openOverviewModal() {
@@ -1701,7 +1791,8 @@
     }
 
     function shareOverviewToX() {
-      const text = encodeURIComponent(`【${gachaTitle}】の景品一覧・お品書きです！ #GachaStudio`);
+      const hashtag = gachaTitle.replace(/\s+/g, '');
+      const text = encodeURIComponent(`【${gachaTitle}】の景品一覧・お品書きです！ #${hashtag}`);
       window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
     }
 
@@ -1770,12 +1861,22 @@
     }
 
     function shareToX() {
-      const text = document.getElementById('bulkMessageTextarea').value;
-      if (!text) {
+      if (!lastPulledResults || lastPulledResults.length === 0) {
         showToast('ポストする内容がありません', 'error');
         return;
       }
-      const encodedText = encodeURIComponent(text);
+
+      // X投稿用テキスト作成（URLを含めず 【当選】[レア度] 景品名 形式）
+      const lines = [`【${gachaTitle} 結果 (${lastPulledResults.length}連)】`];
+      lastPulledResults.forEach((item) => {
+        const rarityLabel = RARITY_CONFIG[item.rarity] ? RARITY_CONFIG[item.rarity].label : item.rarity;
+        lines.push(`【当選】[${rarityLabel}] ${item.name}`);
+      });
+      const hashtag = gachaTitle.replace(/\s+/g, '');
+      lines.push(`#${hashtag}`);
+
+      const shareText = lines.join('\n');
+      const encodedText = encodeURIComponent(shareText);
       window.open(`https://twitter.com/intent/tweet?text=${encodedText}`, '_blank');
     }
 
