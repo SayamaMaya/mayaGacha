@@ -1,0 +1,1811 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gacha Studio - アイテム一覧＆画像生成</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: M PLUS Rounded 1c -->
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --theme-bg: #ffffff;
+      --theme-card-bg: #ffffff;
+      --theme-sub-bg: #ffffff;
+      --theme-primary: #C4B2FF;
+      --theme-primary-hover: #C4B2FF;
+      --theme-primary-text: #C4B2FF;
+      --theme-border: #C4B2FF;
+      --theme-accent: #C4B2FF;
+      --theme-text: #C4B2FF;
+      --theme-shadow: rgba(196, 178, 255, 0.28);
+    }
+
+    body[data-theme="lavender"] {
+      --theme-bg: #ffffff;
+      --theme-sub-bg: #ffffff;
+      --theme-primary: #C4B2FF;
+      --theme-primary-hover: #C4B2FF;
+      --theme-primary-text: #C4B2FF;
+      --theme-border: #C4B2FF;
+      --theme-accent: #C4B2FF;
+      --theme-text: #C4B2FF;
+      --theme-shadow: rgba(196, 178, 255, 0.28);
+    }
+
+    body[data-theme="red"] {
+      --theme-bg: #ffffff;
+      --theme-sub-bg: #ffffff;
+      --theme-primary: #FFB1FC;
+      --theme-primary-hover: #FFB1FC;
+      --theme-primary-text: #FFB1FC;
+      --theme-border: #FFB1FC;
+      --theme-accent: #FFB1FC;
+      --theme-text: #FFB1FC;
+      --theme-shadow: rgba(255, 177, 252, 0.28);
+    }
+
+    body[data-theme="mint"] {
+      --theme-bg: #ffffff;
+      --theme-sub-bg: #ffffff;
+      --theme-primary: #96FFD5;
+      --theme-primary-hover: #96FFD5;
+      --theme-primary-text: #96FFD5;
+      --theme-border: #96FFD5;
+      --theme-accent: #96FFD5;
+      --theme-text: #96FFD5;
+      --theme-shadow: rgba(150, 255, 213, 0.28);
+    }
+
+    body[data-theme="soda"] {
+      --theme-bg: #ffffff;
+      --theme-sub-bg: #ffffff;
+      --theme-primary: #96EFFF;
+      --theme-primary-hover: #96EFFF;
+      --theme-primary-text: #96EFFF;
+      --theme-border: #96EFFF;
+      --theme-accent: #96EFFF;
+      --theme-text: #96EFFF;
+      --theme-shadow: rgba(150, 239, 255, 0.28);
+    }
+
+    body[data-theme="orange"] {
+      --theme-bg: #ffffff;
+      --theme-sub-bg: #ffffff;
+      --theme-primary: #FFC27A;
+      --theme-primary-hover: #FFC27A;
+      --theme-primary-text: #FFC27A;
+      --theme-border: #FFC27A;
+      --theme-accent: #FFC27A;
+      --theme-text: #FFC27A;
+      --theme-shadow: rgba(255, 194, 122, 0.28);
+    }
+
+    body {
+      font-family: 'M PLUS Rounded 1c', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--theme-bg);
+      color: var(--theme-text);
+      transition: background-color 0.35s ease, color 0.35s ease;
+      background-image: radial-gradient(var(--theme-border) 1.8px, transparent 1.8px);
+      background-size: 24px 24px;
+    }
+    
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--theme-primary);
+      border-radius: 9999px;
+      border: 2px solid var(--theme-bg);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--theme-primary-hover);
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--theme-bg);
+    }
+
+    .theme-bg-sub { background-color: var(--theme-sub-bg); }
+    .theme-bg-primary { background-color: var(--theme-primary); }
+    .theme-border { border-color: var(--theme-border); }
+    .theme-text-primary { color: var(--theme-primary-text); }
+    
+    .btn-theme-primary {
+      background-color: var(--theme-accent);
+      color: #ffffff;
+      font-weight: 800;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 16px var(--theme-shadow);
+      transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .btn-theme-primary:hover {
+      background-color: var(--theme-primary-hover);
+      transform: translateY(-2px) scale(1.01);
+      box-shadow: 0 8px 22px var(--theme-shadow);
+    }
+    .btn-theme-primary:active {
+      transform: translateY(1px) scale(0.98);
+      box-shadow: 0 2px 8px var(--theme-shadow);
+    }
+
+    .btn-theme-secondary {
+      background-color: var(--theme-sub-bg);
+      color: var(--theme-primary-text);
+      border: 2px solid var(--theme-border);
+      font-weight: 800;
+      transition: all 0.22s ease;
+    }
+    .btn-theme-secondary:hover {
+      background-color: var(--theme-primary);
+      color: #ffffff;
+      border-color: var(--theme-accent);
+      transform: translateY(-1px);
+    }
+    .btn-theme-secondary:active {
+      transform: translateY(1px);
+    }
+
+    .rarity-badge {
+      background-color: var(--theme-sub-bg);
+      color: var(--theme-primary-text);
+      border: 2px solid var(--theme-border);
+      font-weight: 900;
+      letter-spacing: 0.02em;
+    }
+
+    .btn-flat {
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .btn-flat:hover {
+      transform: translateY(-1.5px);
+    }
+    .btn-flat:active {
+      transform: translateY(1px);
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 12px 32px -8px var(--theme-shadow), 0 4px 12px rgba(0,0,0,0.03);
+    }
+
+    @keyframes shimmer {
+      100% {
+        transform: translateX(100%);
+      }
+    }
+  </style>
+</head>
+<body id="appBody" data-theme="lavender" class="min-h-screen flex flex-col">
+
+  <header class="sticky top-0 z-40 px-4 py-3 glass-card border-b-2 theme-border shadow-sm">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
+      
+      <!-- Brand Title & Gacha Title Input -->
+      <div class="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-3 w-full md:w-auto">
+        <div class="flex items-center gap-2.5 shrink-0">
+          <div id="headerIcon" class="w-10 h-10 rounded-2xl theme-bg-primary text-white flex items-center justify-center text-lg font-black shadow-md shrink-0">
+            <i class="fa-solid fa-gift"></i>
+          </div>
+          <div>
+            <h1 class="text-base font-black tracking-wide flex items-center gap-1.5 theme-text-primary">
+              Gacha Studio <span class="text-[10px] px-2 py-0.5 rounded-full theme-bg-sub theme-text-primary border theme-border font-extrabold">X-SHARE PRO</span>
+            </h1>
+          </div>
+        </div>
+
+        <!-- Title Editor Input -->
+        <div class="flex items-center gap-1.5 theme-bg-sub px-3 py-1.5 rounded-2xl border-2 theme-border w-full sm:w-72 shadow-xs">
+          <i class="fa-solid fa-heading text-xs theme-text-primary shrink-0"></i>
+          <input type="text" id="gachaTitleInput" placeholder="ガチャタイトル" onchange="updateGachaTitle(this.value)" onkeyup="updateGachaTitle(this.value)" class="w-full bg-transparent text-xs font-black theme-text-primary focus:outline-none">
+        </div>
+      </div>
+      
+      <!-- Palette Chooser & Action Buttons -->
+      <div class="flex flex-wrap items-center justify-center md:justify-end gap-2 w-full md:w-auto">
+        <div class="flex items-center gap-2 theme-bg-sub p-1.5 px-3 rounded-2xl border-2 theme-border shadow-xs">
+          <span class="text-xs font-black theme-text-primary flex items-center gap-1.5">
+            <i class="fa-solid fa-palette"></i>
+          </span>
+          <div id="paletteDots" class="flex gap-1.5 items-center">
+            <!-- Populated dynamically -->
+          </div>
+          <select id="themeSelect" onchange="changeTheme(this.value)" class="bg-white border-2 theme-border rounded-xl text-xs font-black px-2 py-1 theme-text-primary focus:outline-none cursor-pointer shadow-xs">
+            <option value="lavender">ゆめかわラベンダー</option>
+            <option value="red">ストロベリーポップ</option>
+            <option value="mint">ミントグリーン</option>
+            <option value="soda">エンジェルソーダ</option>
+            <option value="orange">マーマレードオレンジ</option>
+          </select>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex items-center justify-center gap-1.5 whitespace-nowrap">
+          <button onclick="openOverviewModal()" class="btn-flat px-2.5 py-2 btn-theme-primary rounded-2xl text-[11px] font-black flex items-center gap-1 shadow-md">
+            <i class="fa-solid fa-image"></i> 一覧画像を作成
+          </button>
+
+          <button onclick="openTemplateModal()" class="btn-flat px-2.5 py-2 btn-theme-secondary rounded-2xl text-[11px] font-bold flex items-center gap-1 shadow-xs">
+            <i class="fa-regular fa-comment-dots"></i> メッセージ
+          </button>
+
+          <button onclick="loadDemoData()" id="demoBtn" class="btn-flat px-2.5 py-2 btn-theme-secondary rounded-2xl text-[11px] font-bold flex items-center gap-1">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> テストデータ
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 pb-20">
+    
+    <!-- LEFT PANEL: Data Registration & Input -->
+    <section class="lg:col-span-5 flex flex-col gap-6">
+      <div class="glass-card rounded-3xl p-5 border-2 theme-border flex flex-col gap-4">
+        <div class="flex items-center justify-between border-b-2 theme-border pb-3 gap-1.5 sm:gap-2">
+          <h2 class="text-xs sm:text-sm font-black theme-text-primary flex items-center gap-1.5 shrink-0">
+            <span id="formTitleIcon" class="w-6 h-6 sm:w-7 sm:h-7 rounded-xl theme-bg-primary text-white flex items-center justify-center text-xs shadow-xs transition-colors duration-300">
+              <i class="fa-solid fa-plus" id="formTitleIconI"></i>
+            </span>
+            <span id="formTitleText">景品データの登録</span>
+          </h2>
+          <div class="flex gap-1 sm:gap-2 shrink-0">
+            <label class="btn-flat px-2 sm:px-2.5 py-1.5 btn-theme-secondary rounded-xl text-[10px] sm:text-[11px] font-bold cursor-pointer flex items-center gap-1 shadow-xs transition">
+              <i class="fa-solid fa-file-import theme-text-primary"></i> <span>CSV読込</span>
+              <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="importCSV(event)">
+            </label>
+            <button onclick="exportCSV()" class="btn-flat px-2 sm:px-2.5 py-1.5 btn-theme-secondary rounded-xl text-[10px] sm:text-[11px] font-bold flex items-center gap-1 shadow-xs transition">
+              <i class="fa-solid fa-file-export theme-text-primary"></i> <span>CSV保存</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Single Item Input Form -->
+        <div class="space-y-3">
+          <div class="flex flex-col sm:flex-row gap-2">
+            <select id="singleRarity" class="w-full sm:w-28 theme-bg-sub border-2 theme-border rounded-2xl px-3 py-2 text-xs font-black theme-text-primary focus:outline-none cursor-pointer shadow-xs shrink-0">
+              <option value="UR">UR</option>
+              <option value="SSR">SSR</option>
+              <option value="SR">SR</option>
+              <option value="R">R</option>
+              <option value="N">N</option>
+            </select>
+            <input type="text" id="singleName" placeholder="景品名 (例: 限定アクリルキーホルダー)" class="w-full theme-bg-sub border-2 theme-border rounded-2xl px-3.5 py-2 text-xs font-medium focus:outline-none focus:bg-white shadow-xs transition">
+          </div>
+          <div class="flex flex-col sm:flex-row gap-2">
+            <input type="number" id="singleLimit" placeholder="先着数(空欄で無制限)" min="1" class="w-full sm:w-36 theme-bg-sub border-2 theme-border rounded-2xl px-3.5 py-2 text-xs font-medium focus:outline-none focus:bg-white shadow-xs transition shrink-0">
+            <input type="text" id="singleLink" placeholder="ダウンロード/詳細URL (例: https://...)" class="w-full theme-bg-sub border-2 theme-border rounded-2xl px-3.5 py-2 text-xs font-medium focus:outline-none focus:bg-white shadow-xs transition">
+            <label class="w-full sm:w-auto btn-flat px-3.5 py-2 btn-theme-secondary rounded-2xl text-[11px] font-bold cursor-pointer flex items-center justify-center gap-1.5 shadow-xs transition shrink-0">
+              <i class="fa-regular fa-image theme-text-primary"></i> <span id="imageUploadLabel">画像選択</span>
+              <input type="file" id="singleImage" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
+            </label>
+          </div>
+          
+          <div class="flex gap-2 mt-1">
+            <button id="cancelEditBtn" onclick="cancelEdit()" class="hidden btn-flat w-1/3 py-3 theme-bg-sub theme-text-primary rounded-2xl font-black text-xs flex items-center justify-center gap-1.5 transition border-2 theme-border">
+              キャンセル
+            </button>
+            <button id="submitItemBtn" onclick="submitItemForm()" class="btn-flat flex-1 py-3 btn-theme-primary rounded-2xl font-black text-xs flex items-center justify-center gap-2 transition-all duration-300">
+              <i class="fa-solid fa-circle-plus text-sm"></i> <span>リストに追加する</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT PANEL: Lineup & Gacha Machine -->
+    <section class="lg:col-span-7 flex flex-col gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Item List Lineup -->
+        <div class="glass-card rounded-3xl p-4 sm:p-5 border-2 theme-border flex flex-col gap-2.5 h-[520px] overflow-hidden">
+          <div class="flex items-center justify-between border-b-2 theme-border pb-2.5 shrink-0">
+            <h2 class="text-sm font-black theme-text-primary flex items-center gap-2">
+              <span class="w-7 h-7 rounded-xl theme-bg-primary text-white flex items-center justify-center text-xs shadow-xs">
+                <i class="fa-solid fa-list-ul"></i>
+              </span>
+              景品ラインナップ
+            </h2>
+            <div class="flex items-center gap-2">
+              <span id="itemCountBadge" class="theme-bg-sub theme-text-primary px-2.5 py-1 rounded-xl text-[11px] font-black border-2 theme-border shadow-xs">0件</span>
+              <button onclick="clearAllItems()" class="w-7 h-7 theme-bg-sub theme-text-primary hover:opacity-80 rounded-xl flex items-center justify-center transition border-2 theme-border" title="すべて削除">
+                <i class="fa-solid fa-trash-can text-xs"></i>
+              </button>
+            </div>
+          </div>
+          
+          <div class="w-full h-2 rounded-full theme-bg-sub flex overflow-hidden shadow-inner border theme-border shrink-0" id="rarityBar">
+            <!-- Populated dynamically -->
+          </div>
+
+          <div id="itemList" class="flex-1 min-h-0 overflow-y-auto touch-pan-y space-y-2 pr-1 mt-0.5 pb-1 scroll-smooth">
+            <div class="h-full flex flex-col items-center justify-center theme-text-primary py-10 opacity-70">
+              <i class="fa-solid fa-box-open text-4xl mb-2 animate-pulse"></i>
+              <p class="text-xs font-bold">景品データが登録されていません</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gacha Machine Panel -->
+        <div class="glass-card rounded-3xl border-2 theme-border flex flex-col relative overflow-hidden h-[520px] group shadow-inner bg-white/40">
+          <div id="canvasOverlayHint" class="absolute top-4 left-0 w-full flex justify-center pointer-events-none z-10 transition-opacity duration-500">
+            <span class="bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full text-[10px] font-bold shadow-sm border theme-border flex items-center gap-1.5">
+              <i class="fa-solid fa-hand-pointer animate-bounce theme-text-primary"></i> 画面タップで回す
+            </span>
+          </div>
+
+          <!-- Gacha Machine Canvas -->
+          <div class="flex-1 w-full relative min-h-0">
+            <canvas id="gachaCanvas" class="absolute inset-0 w-full h-full cursor-pointer touch-pan-y"></canvas>
+          </div>
+          
+          <!-- Pull Controls -->
+          <div class="p-4 border-t-2 theme-border bg-white/60 backdrop-blur-md flex gap-2 relative z-20 shrink-0">
+            <button onclick="triggerGacha(1)" class="btn-flat flex-1 py-3.5 btn-theme-secondary rounded-2xl font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xs transition">
+              <i class="fa-solid fa-rotate text-xs"></i> <span>1回まわす</span>
+            </button>
+            <button onclick="triggerGacha(10)" class="btn-flat flex-1 py-3.5 btn-theme-primary rounded-2xl font-black text-xs sm:text-sm flex items-center justify-center gap-2 relative overflow-hidden group-hover:shadow-lg transition">
+              <div class="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+              <i class="fa-solid fa-rotate animate-spin" style="animation-duration: 3s;"></i> <span>10連ガチャ！</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modals -->
+  <div id="overviewModal" class="fixed inset-0 bg-white/20 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300 overflow-y-auto">
+    <div class="glass-card w-full max-w-5xl rounded-3xl border-2 theme-border flex flex-col my-6 transform scale-95 transition-all duration-300 shadow-2xl overflow-hidden" id="overviewModalContent">
+      <div class="theme-bg-primary text-white px-6 py-4 flex items-center justify-between border-b-2 theme-border shadow-xs shrink-0">
+        <h2 class="text-sm font-black flex items-center gap-2">
+          <i class="fa-solid fa-image"></i> X投稿用「お品書き・景品一覧画像」プレビュー
+        </h2>
+        <button onclick="closeOverviewModal()" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/40 flex items-center justify-center transition text-white">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div id="overviewModalScrollArea" class="p-4 flex flex-col items-center gap-4 theme-bg-sub max-h-[75vh] overflow-y-auto touch-pan-y">
+        <div class="w-full flex justify-center items-center rounded-2xl overflow-hidden border-2 theme-border bg-white shadow-md p-2">
+          <canvas id="overviewCanvas" class="max-w-full max-h-[60vh] w-auto h-auto rounded-xl object-contain shadow-lg"></canvas>
+        </div>
+      </div>
+
+      <div class="px-6 py-4 bg-white border-t-2 theme-border flex flex-wrap items-center justify-between gap-3 shrink-0">
+        <p class="text-xs theme-text-primary font-bold flex items-center gap-1">
+          <i class="fa-solid fa-circle-info"></i> 高画質なお品書き画像を自動生成しました！
+        </p>
+
+        <div class="flex items-center gap-2.5">
+          <button onclick="downloadOverviewImage()" class="btn-flat px-4 py-2.5 btn-theme-secondary rounded-xl text-xs font-black flex items-center gap-2 shadow-xs">
+            <i class="fa-solid fa-download"></i> PNG画像として保存
+          </button>
+          <button onclick="shareOverviewToX()" class="btn-flat px-4 py-2.5 btn-theme-primary rounded-xl text-xs font-black flex items-center gap-2 shadow-md">
+            <i class="fa-brands fa-x-twitter"></i> Xでポストする
+          </button>
+          <button onclick="closeOverviewModal()" class="btn-flat px-4 py-2.5 btn-theme-secondary rounded-xl text-xs font-bold">
+            閉じる
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="resultModal" class="fixed inset-0 bg-white/20 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300 overflow-y-auto">
+    <div class="glass-card w-full max-w-2xl rounded-3xl border-2 theme-border flex flex-col my-8 transform scale-95 transition-all duration-300 shadow-2xl" id="resultModalContent">
+      <div id="modalHeaderBg" class="theme-bg-primary text-white px-6 py-4 rounded-t-[22px] flex items-center justify-between border-b-2 theme-border shadow-xs">
+        <h2 class="text-sm font-black flex items-center gap-2">
+          <i class="fa-solid fa-gift"></i> ガチャ結果・リスナー配付用
+        </h2>
+        <button onclick="closeResultModal()" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/40 flex items-center justify-center transition text-white">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-6 flex-1 flex flex-col space-y-4">
+        <div class="theme-bg-sub p-4 rounded-2xl border-2 theme-border shadow-inner">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+            <span class="text-xs font-black theme-text-primary flex items-center gap-1.5">
+              <i class="fa-regular fa-copy theme-text-primary"></i> リスナー配布用一括テキスト
+            </span>
+            <div class="flex flex-wrap gap-2">
+              <button onclick="shareToX()" class="btn-flat px-3.5 py-1.5 btn-theme-secondary text-xs font-black rounded-xl flex items-center justify-center gap-1.5 shadow-xs">
+                <i class="fa-brands fa-x-twitter"></i> 結果をポスト
+              </button>
+              <button onclick="copyBulkListenerMessage()" id="bulkCopyBtn" class="btn-flat px-3.5 py-1.5 btn-theme-primary text-xs font-black rounded-xl flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-paste"></i> すべてコピー
+              </button>
+            </div>
+          </div>
+          <textarea id="bulkMessageTextarea" readonly rows="4" class="w-full bg-white border-2 theme-border rounded-xl p-3 text-xs font-mono resize-none focus:outline-none shadow-xs"></textarea>
+        </div>
+
+        <h3 class="text-xs font-black theme-text-primary border-b-2 theme-border pb-2 flex items-center gap-1.5">
+          <i class="fa-solid fa-star theme-text-primary"></i> 獲得アイテム一覧
+        </h3>
+        <div id="resultItemsContainer" class="overflow-y-auto touch-pan-y max-h-[35vh] space-y-2 pr-1"></div>
+      </div>
+
+      <div class="px-6 py-4 theme-bg-sub border-t-2 theme-border rounded-b-[22px] flex justify-end">
+        <button onclick="closeResultModal()" class="btn-flat px-6 py-2.5 btn-theme-secondary rounded-xl font-bold text-xs shadow-xs">
+          閉じる
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="templateModal" class="fixed inset-0 bg-white/20 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300">
+    <div class="glass-card w-full max-w-lg rounded-3xl p-6 border-2 theme-border shadow-2xl">
+      <h3 class="text-sm font-black theme-text-primary flex items-center gap-2 mb-3 border-b-2 theme-border pb-2">
+        <i class="fa-solid fa-pen-to-square theme-text-primary"></i> メッセージテンプレート設定
+      </h3>
+      <p class="text-xs mb-3 leading-relaxed font-medium theme-text-primary">
+        結果コピー時に使用されるテキスト書式を設定できます。<br>
+        変数: <code class="theme-bg-sub theme-text-primary px-1.5 py-0.5 rounded font-black border theme-border">{rarity}</code>, <code class="theme-bg-sub theme-text-primary px-1.5 py-0.5 rounded font-black border theme-border">{name}</code>, <code class="theme-bg-sub theme-text-primary px-1.5 py-0.5 rounded font-black border theme-border">{link}</code>
+      </p>
+      
+      <div class="mb-4">
+        <textarea id="tplInput" rows="4" class="w-full theme-bg-sub border-2 theme-border rounded-2xl p-3 text-xs font-mono focus:outline-none shadow-inner theme-text-primary"></textarea>
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <button onclick="closeTemplateModal()" class="btn-flat px-4 py-2 btn-theme-secondary rounded-xl text-xs font-bold">キャンセル</button>
+        <button onclick="saveTemplateModal()" id="tplSaveBtn" class="btn-flat px-5 py-2 btn-theme-primary rounded-xl text-xs font-black">保存する</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="fixed bottom-6 right-6 theme-bg-sub px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 z-[100] transform translate-y-20 opacity-0 transition-all duration-300 border-2 theme-border">
+    <i id="toastIcon" class="fa-solid fa-circle-check theme-text-primary text-lg"></i>
+    <span id="toastMsg" class="text-xs font-black theme-text-primary">通知メッセージ</span>
+  </div>
+
+  <script>
+    let items = [];
+    let gachaTitle = "サンプルガチャ";
+    let msgTemplate = "【当選】[{rarity}] {name}\nダウンロードURL:\n{link}";
+    let isAnimating = false;
+    let canvas, ctx;
+
+    let currentBase64Image = null; 
+    let editingItemId = null; 
+
+    let activeEffectType = 'idle';
+    let lastPulledResults = [];
+    let bgCapsules = [];
+    let knobAngle = 0;
+
+    // Dropped Capsule physics during pull animation
+    let droppedCapsule = null;
+    let spinAnimProgress = 0;
+
+    const STORAGE_KEY_ITEMS = 'gacha_studio_items_v2';
+    const STORAGE_KEY_TITLE = 'gacha_studio_title_v2';
+    const STORAGE_KEY_TPL = 'gacha_studio_tpl_v2';
+    const STORAGE_KEY_THEME = 'gacha_studio_theme_v2';
+
+    const THEMES = {
+      lavender: {
+        name: 'ゆめかわラベンダー',
+        dotColor: '#C4B2FF',
+        primary: '#C4B2FF',
+        accent: '#C4B2FF',
+        primaryText: '#C4B2FF',
+        light: '#ffffff',
+        bgGradient: ['#ffffff', '#ffffff'],
+        capsules: ['#C4B2FF', '#FFB1FC', '#96EFFF', '#96FFD5']
+      },
+      red: {
+        name: 'ストロベリーポップ',
+        dotColor: '#FFB1FC',
+        primary: '#FFB1FC',
+        accent: '#FFB1FC',
+        primaryText: '#FFB1FC',
+        light: '#ffffff',
+        bgGradient: ['#ffffff', '#ffffff'],
+        capsules: ['#C4B2FF', '#FFB1FC', '#96EFFF', '#96FFD5']
+      },
+      mint: {
+        name: 'ミントグリーン',
+        dotColor: '#96FFD5',
+        primary: '#96FFD5',
+        accent: '#96FFD5',
+        primaryText: '#96FFD5',
+        light: '#ffffff',
+        bgGradient: ['#ffffff', '#ffffff'],
+        capsules: ['#C4B2FF', '#FFB1FC', '#96EFFF', '#96FFD5']
+      },
+      soda: {
+        name: 'エンジェルソーダ',
+        dotColor: '#96EFFF',
+        primary: '#96EFFF',
+        accent: '#96EFFF',
+        primaryText: '#96EFFF',
+        light: '#ffffff',
+        bgGradient: ['#ffffff', '#ffffff'],
+        capsules: ['#C4B2FF', '#FFB1FC', '#96EFFF', '#96FFD5']
+      },
+      orange: {
+        name: 'マーマレードオレンジ',
+        dotColor: '#FFC27A',
+        primary: '#FFC27A',
+        accent: '#FFC27A',
+        primaryText: '#FFC27A',
+        light: '#ffffff',
+        bgGradient: ['#ffffff', '#ffffff'],
+        capsules: ['#C4B2FF', '#FFB1FC', '#FFC27A', '#96FFD5']
+      }
+    };
+    let currentThemeKey = 'lavender';
+
+    const RARITY_CONFIG = {
+      'UR':  { weight: 1, label: 'UR', badgeBg: '#FFFC67', iconClass: 'fa-solid fa-crown theme-text-primary' },
+      'SSR': { weight: 5, label: 'SSR', badgeBg: '#FFB1FC', iconClass: 'fa-solid fa-star theme-text-primary' },
+      'SR':  { weight: 20, label: 'SR', badgeBg: '#C4B2FF', iconClass: 'fa-solid fa-gem theme-text-primary' },
+      'R':   { weight: 35, label: 'R', badgeBg: '#96EFFF', iconClass: 'fa-solid fa-sparkles theme-text-primary' },
+      'N':   { weight: 40, label: 'N', badgeBg: '#96FFD5', iconClass: 'fa-solid fa-cube theme-text-primary' }
+    };
+
+    function updateGachaTitle(val) {
+      gachaTitle = val.trim() || "サンプルガチャ";
+      saveToLocalStorage();
+    }
+
+    function saveToLocalStorage() {
+      try {
+        localStorage.setItem(STORAGE_KEY_ITEMS, JSON.stringify(items));
+        localStorage.setItem(STORAGE_KEY_TITLE, gachaTitle);
+        localStorage.setItem(STORAGE_KEY_TPL, msgTemplate);
+        localStorage.setItem(STORAGE_KEY_THEME, currentThemeKey);
+      } catch (e) {
+        console.warn('LocalStorage save failed:', e);
+      }
+    }
+
+    function loadFromLocalStorage() {
+      try {
+        const savedItems = localStorage.getItem(STORAGE_KEY_ITEMS);
+        if (savedItems) items = JSON.parse(savedItems);
+        
+        const savedTitle = localStorage.getItem(STORAGE_KEY_TITLE);
+        if (savedTitle) {
+          gachaTitle = savedTitle;
+        }
+        document.getElementById('gachaTitleInput').value = gachaTitle;
+
+        const savedTpl = localStorage.getItem(STORAGE_KEY_TPL);
+        if (savedTpl) msgTemplate = savedTpl;
+        
+        const savedTheme = localStorage.getItem(STORAGE_KEY_THEME);
+        if (savedTheme && THEMES[savedTheme]) {
+          currentThemeKey = savedTheme;
+          document.body.setAttribute('data-theme', currentThemeKey);
+          const sel = document.getElementById('themeSelect');
+          if (sel) sel.value = currentThemeKey;
+        }
+      } catch (e) {
+        console.warn('LocalStorage load failed:', e);
+      }
+    }
+
+    function renderPaletteDots() {
+      const container = document.getElementById('paletteDots');
+      if (!container) return;
+      container.innerHTML = '';
+      Object.keys(THEMES).forEach(k => {
+        const theme = THEMES[k];
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.onclick = () => {
+          document.getElementById('themeSelect').value = k;
+          changeTheme(k);
+        };
+        const isSelected = currentThemeKey === k;
+        dot.className = `w-4 h-4 rounded-full border-2 border-white transition transform hover:scale-125 cursor-pointer shadow-sm ${isSelected ? 'scale-125 ring-2 ring-offset-1' : ''}`;
+        dot.style.backgroundColor = theme.dotColor;
+        if (isSelected) {
+          dot.style.borderColor = theme.accent;
+        }
+        container.appendChild(dot);
+      });
+    }
+
+    function changeTheme(themeKey) {
+      if (!THEMES[themeKey]) return;
+      currentThemeKey = themeKey;
+      document.body.setAttribute('data-theme', themeKey);
+      renderPaletteDots();
+      initCapsules();
+      updateItemListAndStats();
+      saveToLocalStorage();
+    }
+
+    function showToast(msg, type = 'success') {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMsg');
+      const toastIcon = document.getElementById('toastIcon');
+
+      toastMsg.textContent = msg;
+      toastIcon.className = 'fa-solid fa-circle-check theme-text-primary text-lg';
+
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
+    }
+
+    function copyToClipboard(text, successMsg = 'コピーしました！') {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        showToast(successMsg, 'success');
+      } catch (err) {
+        showToast('コピーに失敗しました', 'error');
+      } finally {
+        document.body.removeChild(textarea);
+      }
+    }
+
+    function handleImageUpload(event) {
+      const file = event.target.files[0];
+      const label = document.getElementById('imageUploadLabel');
+      
+      if (!file) {
+        currentBase64Image = null;
+        label.textContent = '画像選択';
+        return;
+      }
+
+      if (!file.type.startsWith('image/')) {
+        showToast('画像ファイルを選択してください', 'error');
+        event.target.value = '';
+        return;
+      }
+
+      label.textContent = '圧縮中...';
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const cvs = document.createElement('canvas');
+          const MAX_WIDTH = 600;
+          const MAX_HEIGHT = 600;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > MAX_WIDTH || height > MAX_HEIGHT) {
+            const ratio = Math.min(MAX_WIDTH / width, MAX_HEIGHT / height);
+            width = Math.round(width * ratio);
+            height = Math.round(height * ratio);
+          }
+
+          cvs.width = width;
+          cvs.height = height;
+          const ctx2 = cvs.getContext('2d');
+          ctx2.drawImage(img, 0, 0, width, height);
+
+          currentBase64Image = cvs.toDataURL('image/png');
+          label.textContent = '画像準備OK';
+          showToast('画像をセットしました', 'success');
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function submitItemForm() {
+      const rarity = document.getElementById('singleRarity').value;
+      const name = document.getElementById('singleName').value.trim();
+      const link = document.getElementById('singleLink').value.trim();
+      const limitRaw = document.getElementById('singleLimit').value;
+      const limit = limitRaw ? parseInt(limitRaw, 10) : null;
+
+      if (!name) {
+        showToast('景品名を入力してください', 'error');
+        return;
+      }
+
+      if (editingItemId) {
+        const item = items.find(it => it.id === editingItemId);
+        if (item) {
+          item.rarity = rarity;
+          item.name = name;
+          item.link = link;
+          item.image = currentBase64Image;
+          item.limit = limit;
+          showToast(`${name} を更新しました`);
+        }
+        cancelEdit();
+      } else {
+        items.push({
+          id: 'item_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+          name: name,
+          link: link,
+          rarity: rarity,
+          image: currentBase64Image,
+          limit: limit,
+          pulledCount: 0
+        });
+        showToast(`${name} を追加しました`);
+        
+        document.getElementById('singleName').value = '';
+        document.getElementById('singleLink').value = '';
+        document.getElementById('singleLimit').value = '';
+        document.getElementById('singleImage').value = ''; 
+        document.getElementById('imageUploadLabel').textContent = '画像選択';
+        currentBase64Image = null;
+      }
+
+      updateItemListAndStats();
+    }
+
+    function editItem(id) {
+      const item = items.find(it => it.id === id);
+      if (!item) return;
+      
+      editingItemId = id;
+      
+      document.getElementById('singleRarity').value = item.rarity;
+      document.getElementById('singleName').value = item.name;
+      document.getElementById('singleLink').value = item.link;
+      document.getElementById('singleLimit').value = item.limit || '';
+      
+      currentBase64Image = item.image || null;
+      document.getElementById('imageUploadLabel').textContent = currentBase64Image ? '画像セット済' : '画像選択';
+      
+      document.getElementById('formTitleText').textContent = '景品データの編集';
+      document.getElementById('formTitleIconI').className = 'fa-solid fa-pen';
+      
+      const btn = document.getElementById('submitItemBtn');
+      btn.innerHTML = '<i class="fa-solid fa-check text-sm"></i> <span>更新する</span>';
+      
+      document.getElementById('cancelEditBtn').classList.remove('hidden');
+      document.getElementById('singleName').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function cancelEdit() {
+      editingItemId = null;
+      
+      document.getElementById('singleRarity').value = 'N';
+      document.getElementById('singleName').value = '';
+      document.getElementById('singleLink').value = '';
+      document.getElementById('singleLimit').value = '';
+      document.getElementById('singleImage').value = '';
+      currentBase64Image = null;
+      document.getElementById('imageUploadLabel').textContent = '画像選択';
+      
+      document.getElementById('formTitleText').textContent = '景品データの登録';
+      document.getElementById('formTitleIconI').className = 'fa-solid fa-plus';
+      
+      const btn = document.getElementById('submitItemBtn');
+      btn.innerHTML = '<i class="fa-solid fa-circle-plus text-sm"></i> <span>リストに追加する</span>';
+      
+      document.getElementById('cancelEditBtn').classList.add('hidden');
+    }
+
+    function parseCSV(text) {
+      const result = [];
+      let row = [];
+      let inQuotes = false;
+      let currentVal = '';
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const nextChar = text[i + 1];
+
+        if (char === '"') {
+          if (inQuotes && nextChar === '"') {
+            currentVal += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (char === ',' && !inQuotes) {
+          row.push(currentVal);
+          currentVal = '';
+        } else if ((char === '\r' || char === '\n') && !inQuotes) {
+          if (char === '\r' && nextChar === '\n') i++;
+          row.push(currentVal);
+          if (row.length > 1 || row[0] !== '') result.push(row);
+          row = [];
+          currentVal = '';
+        } else {
+          currentVal += char;
+        }
+      }
+      if (currentVal !== '' || row.length > 0) {
+        row.push(currentVal);
+        if (row.length > 1 || row[0] !== '') result.push(row);
+      }
+      return result;
+    }
+
+    function importCSV(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const text = e.target.result;
+        const rows = parseCSV(text);
+        if (rows.length === 0) {
+          showToast('CSVデータが空です', 'error');
+          return;
+        }
+
+        const newItems = [];
+        let startIdx = 0;
+
+        if (rows[0] && rows[0][0] && rows[0][0].startsWith('# TITLE:')) {
+          const loadedTitle = rows[0][0].replace('# TITLE:', '').trim();
+          if (loadedTitle) {
+            gachaTitle = loadedTitle;
+            document.getElementById('gachaTitleInput').value = gachaTitle;
+          }
+          startIdx = 1;
+        }
+
+        if (rows[startIdx] && (rows[startIdx][0] === '景品名' || rows[startIdx][0] === 'name')) {
+          startIdx++;
+        }
+
+        for (let i = startIdx; i < rows.length; i++) {
+          const parts = rows[i];
+          if (!parts || parts.length === 0) continue;
+
+          let name = parts[0] ? parts[0].trim() : '';
+          if (!name || name.startsWith('#')) continue;
+
+          let link = parts[1] ? parts[1].trim() : '';
+          let rarity = parts[2] ? parts[2].trim().toUpperCase() : 'N';
+          let limit = parts[3] && parts[3].trim() !== '' ? parseInt(parts[3].trim(), 10) : null;
+          let pulledCount = parts[4] && parts[4].trim() !== '' ? parseInt(parts[4].trim(), 10) : 0;
+          let image = parts[5] ? parts[5].trim() : null;
+
+          if (!RARITY_CONFIG[rarity]) rarity = 'N';
+          if (isNaN(limit) || limit <= 0) limit = null;
+          if (isNaN(pulledCount) || pulledCount < 0) pulledCount = 0;
+
+          newItems.push({
+            id: 'item_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+            name: name,
+            link: link,
+            rarity: rarity,
+            image: image || null,
+            limit: limit,
+            pulledCount: pulledCount
+          });
+        }
+
+        if (newItems.length > 0) {
+          items = items.concat(newItems);
+          updateItemListAndStats();
+          showToast(`CSVから${newItems.length}件の景品とタイトルを読み込みました！`);
+        } else {
+          showToast('有効な景品データが見つかりませんでした', 'error');
+        }
+        event.target.value = '';
+      };
+      reader.readAsText(file);
+    }
+
+    async function exportCSV() {
+      if (!items || items.length === 0) {
+        showToast('保存する景品データがありません', 'error');
+        return;
+      }
+
+      try {
+        const escapeCsv = (val) => {
+          if (val === null || val === undefined) return '""';
+          const str = String(val);
+          return '"' + str.replace(/"/g, '""') + '"';
+        };
+
+        const lines = [];
+        lines.push(`# TITLE: ${gachaTitle}`);
+        
+        const headers = ['景品名', 'ダウンロードURL', 'レア度', '先着数', '排出済数', '画像Base64'];
+        lines.push(headers.map(h => escapeCsv(h)).join(','));
+
+        items.forEach(item => {
+          const row = [
+            escapeCsv(item.name || ''),
+            escapeCsv(item.link || ''),
+            escapeCsv(item.rarity || 'N'),
+            escapeCsv(item.limit !== null && item.limit !== undefined ? item.limit : ''),
+            escapeCsv(item.pulledCount || 0),
+            escapeCsv(item.image || '')
+          ];
+          lines.push(row.join(','));
+        });
+
+        const csvContent = lines.join('\r\n');
+        const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
+        const blob = new Blob([bom, csvContent], { type: 'text/csv;charset=utf-8' });
+        const filename = `${gachaTitle}_お品書き_${Date.now()}.csv`;
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+        showToast('CSVファイルを保存しました！');
+      } catch (err) {
+        showToast('CSVの保存に失敗しました', 'error');
+      }
+    }
+
+    function loadDemoData() {
+      gachaTitle = "サンプルガチャ";
+      document.getElementById('gachaTitleInput').value = gachaTitle;
+      
+      items = [
+        { id: 'd0', name: '等身大タペストリー (デジタルサイン入り)', link: 'https://example.com/demo_ur', rarity: 'UR', limit: 1, pulledCount: 0, image: null },
+        { id: 'd1', name: 'ジェリービーンズ アクキー', link: 'https://example.com/demo_ssr1', rarity: 'SSR', limit: 2, pulledCount: 0, image: null },
+        { id: 'd2', name: 'キャンディパック アクキー', link: 'https://example.com/demo_ssr2', rarity: 'SSR', limit: 3, pulledCount: 0, image: null },
+        { id: 'd3', name: 'アイスクリーム缶バッジ 全3種', link: 'https://example.com/demo_sr1', rarity: 'SR', limit: 10, pulledCount: 0, image: null },
+        { id: 'd4', name: 'ポストカード 全3種', link: 'https://example.com/demo_r1', rarity: 'R', limit: null, pulledCount: 0, image: null },
+        { id: 'd5', name: 'オリジナルブロマイド 全5種', link: 'https://example.com/demo_n', rarity: 'N', limit: null, pulledCount: 0, image: null },
+      ];
+      updateItemListAndStats();
+      showToast('テストデータをセットしました');
+    }
+
+    function updateItemListAndStats() {
+      const container = document.getElementById('itemList');
+      const badge = document.getElementById('itemCountBadge');
+      const rarityBar = document.getElementById('rarityBar');
+
+      saveToLocalStorage();
+
+      badge.textContent = `${items.length}件`;
+      container.innerHTML = '';
+
+      if (items.length === 0) {
+        container.innerHTML = `
+          <div class="h-full flex flex-col items-center justify-center theme-text-primary py-10 opacity-70">
+            <i class="fa-solid fa-box-open text-4xl mb-2 animate-pulse"></i>
+            <p class="text-xs font-bold">景品データが登録されていません</p>
+          </div>`;
+        rarityBar.innerHTML = '';
+        return;
+      }
+
+      const counts = { UR: 0, SSR: 0, SR: 0, R: 0, N: 0 };
+      items.forEach(it => { if(counts[it.rarity] !== undefined) counts[it.rarity]++; });
+
+      rarityBar.innerHTML = '';
+      const themeColors = THEMES[currentThemeKey].capsules;
+      const rarities = ['UR', 'SSR', 'SR', 'R', 'N'];
+
+      rarities.forEach((r, idx) => {
+        const pct = (counts[r] / items.length) * 100;
+        if (pct > 0) {
+          const seg = document.createElement('div');
+          seg.style.width = `${pct}%`;
+          seg.style.backgroundColor = themeColors[idx % themeColors.length];
+          seg.className = 'transition-all duration-300';
+          rarityBar.appendChild(seg);
+        }
+      });
+
+      items.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'flex items-center justify-between p-2.5 bg-white rounded-2xl border-2 theme-border gap-2.5 hover:shadow-md transition shrink-0';
+        
+        let imgHtml = item.image 
+          ? `<div class="w-12 h-12 rounded-xl shrink-0 border-2 theme-border bg-white flex items-center justify-center overflow-hidden p-0.5 shadow-xs"><img src="${item.image}" alt="${item.name}" class="max-w-full max-h-full object-contain rounded-lg"></div>`
+          : `<div class="w-12 h-12 rounded-xl shrink-0 border-2 theme-border theme-bg-sub flex flex-col items-center justify-center theme-text-primary gap-0.5 shadow-xs"><i class="fa-regular fa-image text-sm"></i><span class="text-[8px] font-black">No Image</span></div>`;
+
+        let limitBadgeHtml = '';
+        if (item.limit) {
+          const remain = item.limit - (item.pulledCount || 0);
+          if (remain <= 0) {
+            limitBadgeHtml = `<span class="theme-bg-sub theme-text-primary border theme-border px-1.5 py-0.5 rounded-lg text-[9px] font-bold whitespace-nowrap">終了</span>`;
+            div.classList.add('opacity-60');
+          } else {
+            limitBadgeHtml = `<span class="theme-bg-sub theme-text-primary border theme-border px-1.5 py-0.5 rounded-lg text-[9px] font-bold whitespace-nowrap">残 ${remain}/${item.limit}</span>`;
+          }
+        }
+
+        div.innerHTML = `
+          <div class="flex items-center gap-2.5 overflow-hidden flex-1 min-w-0">
+            ${imgHtml}
+            <div class="flex flex-col justify-center flex-1 min-w-0 py-0.5">
+              <div class="flex items-center gap-1 mb-0.5 flex-wrap">
+                <span class="px-1.5 py-0.5 text-[9px] rounded-lg shrink-0 rarity-badge flex items-center gap-1 shadow-xs">
+                  <i class="${RARITY_CONFIG[item.rarity].iconClass}"></i> ${RARITY_CONFIG[item.rarity].label}
+                </span>
+                ${limitBadgeHtml}
+              </div>
+              <div class="font-black text-xs truncate leading-snug theme-text-primary" title="${item.name}">${item.name}</div>
+              <div class="text-[10px] theme-text-primary truncate opacity-80 mt-0.5 flex items-center gap-1">
+                <i class="fa-solid fa-link text-[9px]"></i>
+                <span class="truncate">${item.link || '詳細/配布URL未設定'}</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-col items-center gap-1 shrink-0 pl-1.5 border-l-2 theme-border">
+            <button onclick="editItem('${item.id}')" class="w-7 h-7 theme-text-primary hover:text-white transition theme-bg-sub hover:theme-bg-primary rounded-xl border-2 theme-border flex items-center justify-center shadow-xs" title="編集">
+              <i class="fa-solid fa-pen text-[10px]"></i>
+            </button>
+            <button onclick="deleteItem('${item.id}')" class="w-7 h-7 theme-text-primary hover:text-white transition theme-bg-sub hover:theme-bg-primary rounded-xl border-2 theme-border flex items-center justify-center shadow-xs" title="削除">
+              <i class="fa-solid fa-trash-can text-[10px]"></i>
+            </button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function deleteItem(id) {
+      items = items.filter(it => it.id !== id);
+      updateItemListAndStats();
+    }
+
+    function clearAllItems() {
+      if(items.length > 0) {
+        items = [];
+        updateItemListAndStats();
+        showToast('景品一覧を削除しました');
+      }
+    }
+
+    function drawOneGacha() {
+      if (items.length === 0) return null;
+      const pools = { UR: [], SSR: [], SR: [], R: [], N: [] };
+      
+      items.forEach(it => { 
+        if (!it.limit || (it.pulledCount || 0) < it.limit) {
+          if(pools[it.rarity]) pools[it.rarity].push(it); 
+        }
+      });
+
+      let totalWeight = 0;
+      Object.keys(RARITY_CONFIG).forEach(r => {
+        if (pools[r].length > 0) totalWeight += RARITY_CONFIG[r].weight;
+      });
+
+      if (totalWeight === 0) return null;
+
+      let rand = Math.random() * totalWeight;
+      let selectedRarity = 'N';
+
+      for (const r of Object.keys(RARITY_CONFIG)) {
+        if (pools[r].length > 0) {
+          if (rand < RARITY_CONFIG[r].weight) {
+            selectedRarity = r;
+            break;
+          }
+          rand -= RARITY_CONFIG[r].weight;
+        }
+      }
+      const pool = pools[selectedRarity];
+      return pool[Math.floor(Math.random() * pool.length)];
+    }
+
+    function triggerGacha(count) {
+      if (isAnimating) return;
+      if (items.length === 0) {
+        showToast('景品が登録されていません', 'error');
+        return;
+      }
+
+      const results = [];
+      for (let i = 0; i < count; i++) {
+        const item = drawOneGacha();
+        if (item) {
+          item.pulledCount = (item.pulledCount || 0) + 1;
+          results.push(item);
+        }
+      }
+
+      if (results.length === 0) {
+        showToast('すべての景品が上限に達しています', 'error');
+        return;
+      }
+
+      isAnimating = true;
+      activeEffectType = 'spinning';
+      lastPulledResults = results;
+      spinAnimProgress = 0;
+
+      // Spawn dropped capsule
+      const themeColors = THEMES[currentThemeKey].capsules;
+      droppedCapsule = {
+        color: themeColors[Math.floor(Math.random() * themeColors.length)],
+        progress: 0
+      };
+
+      setTimeout(() => {
+        activeEffectType = 'idle';
+        isAnimating = false;
+        droppedCapsule = null;
+        updateItemListAndStats();
+        showResultModal(results);
+      }, 1600);
+    }
+
+    function initCanvas() {
+      canvas = document.getElementById('gachaCanvas');
+      ctx = canvas.getContext('2d');
+
+      function resize() {
+        const parent = canvas.parentElement;
+        const rect = parent.getBoundingClientRect();
+        canvas.width = rect.width * window.devicePixelRatio;
+        canvas.height = rect.height * window.devicePixelRatio;
+        ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      }
+
+      resize();
+      window.addEventListener('resize', resize);
+
+      canvas.addEventListener('click', (e) => {
+        if (!isAnimating) triggerGacha(1);
+      });
+
+      initCapsules();
+      requestAnimationFrame(renderLoop);
+    }
+
+    function initCapsules() {
+      bgCapsules = [];
+      const themeColors = THEMES[currentThemeKey].capsules;
+      const count = 26;
+      for (let i = 0; i < count; i++) {
+        bgCapsules.push({
+          x: (Math.random() - 0.5) * 80,
+          y: (Math.random() - 0.5) * 80,
+          r: 15,
+          color: themeColors[Math.floor(Math.random() * themeColors.length)],
+          vx: (Math.random() - 0.5) * 1.5,
+          vy: Math.random() * 0.5,
+          angle: Math.random() * Math.PI * 2,
+          va: (Math.random() - 0.5) * 0.08
+        });
+      }
+    }
+
+    function drawCapsule(x, y, radius, color, angle, alpha = 1) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(angle);
+      ctx.globalAlpha = alpha;
+
+      // Outer Shadow
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.12)';
+      ctx.shadowBlur = 6;
+      ctx.shadowOffsetY = 3;
+
+      // Base Circle Clip
+      ctx.beginPath();
+      ctx.arc(0, 0, radius, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+
+      ctx.shadowColor = 'transparent';
+
+      // Top Half Color
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(0, 0, radius, Math.PI, 0, false);
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.restore();
+
+      // Bottom Half White
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(0, 0, radius, 0, Math.PI, false);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+      ctx.restore();
+
+      // Center Seam Band
+      ctx.fillStyle = 'rgba(0,0,0,0.15)';
+      ctx.fillRect(-radius, -1.5, radius * 2, 3);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(-radius, -1, radius * 2, 2);
+
+      // Glossy Highlight
+      ctx.beginPath();
+      ctx.ellipse(-radius * 0.35, -radius * 0.4, radius * 0.35, radius * 0.18, -Math.PI / 4, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+      ctx.fill();
+
+      // Outer Border
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = 'rgba(0,0,0,0.08)';
+      ctx.beginPath();
+      ctx.arc(0, 0, radius, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    function renderLoop() {
+      const rect = canvas.getBoundingClientRect();
+      const w = rect.width;
+      const h = rect.height;
+      const cx = w / 2;
+      const cy = h / 2;
+
+      ctx.clearRect(0, 0, w, h);
+
+      const scale = Math.min(w / 350, h / 400) * 0.72;
+      const globeRadius = 110 * scale;
+      const baseW = 220 * scale;
+      const baseH = 130 * scale;
+      
+      const machineY = cy + 30 * scale;
+      const globeY = machineY - baseH / 2 - globeRadius + 12 * scale;
+
+      const theme = THEMES[currentThemeKey];
+      const primaryHex = theme.primary;
+
+      // Handle Handle Spin Angle
+      if (activeEffectType === 'spinning') {
+        knobAngle += 0.22;
+        spinAnimProgress += 0.02;
+      }
+
+      // Physics update for background capsules
+      const maxDist = globeRadius - 16 * scale;
+      const gravity = 0.25;
+
+      bgCapsules.forEach(cap => {
+        if (activeEffectType === 'spinning') {
+          // Violent bounce and shuffle during pull
+          cap.vx += (Math.random() - 0.5) * 4;
+          cap.vy += (Math.random() - 0.5) * 4 - 0.8;
+          cap.va += (Math.random() - 0.5) * 0.2;
+        } else {
+          // Regular physics
+          cap.vy += gravity * 0.3;
+          cap.vx *= 0.98;
+          cap.vy *= 0.98;
+        }
+
+        cap.x += cap.vx;
+        cap.y += cap.vy;
+        cap.angle += cap.va;
+
+        // Container boundary collision
+        const dist = Math.hypot(cap.x, cap.y);
+        if (dist > maxDist) {
+          const angle = Math.atan2(cap.y, cap.x);
+          cap.x = Math.cos(angle) * maxDist;
+          cap.y = Math.sin(angle) * maxDist;
+
+          // Bounce reflection
+          const nx = Math.cos(angle);
+          const ny = Math.sin(angle);
+          const dot = cap.vx * nx + cap.vy * ny;
+
+          cap.vx = (cap.vx - 1.6 * dot * nx) * 0.65;
+          cap.vy = (cap.vy - 1.6 * dot * ny) * 0.65;
+        }
+      });
+
+      // Render Machine Globe Background
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(cx, globeY, globeRadius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.lineWidth = 4 * scale;
+      ctx.strokeStyle = primaryHex;
+      ctx.stroke();
+
+      // Inner Glass Reflection
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, globeY, globeRadius - 2 * scale, 0, Math.PI * 2);
+      ctx.clip();
+
+      // Render Capsules Inside Globe
+      bgCapsules.forEach(cap => {
+        drawCapsule(cx + cap.x, globeY + cap.y, cap.r * scale, cap.color, cap.angle);
+      });
+
+      // Glass Glare
+      ctx.beginPath();
+      ctx.arc(cx - globeRadius * 0.3, globeY - globeRadius * 0.3, globeRadius * 0.6, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+      ctx.fill();
+
+      ctx.restore();
+
+      // Machine Base Body
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.moveTo(cx - baseW * 0.42, machineY - baseH / 2);
+      ctx.lineTo(cx + baseW * 0.42, machineY - baseH / 2);
+      ctx.lineTo(cx + baseW * 0.48, machineY + baseH / 2 - 10 * scale);
+      ctx.lineTo(cx - baseW * 0.48, machineY + baseH / 2 - 10 * scale);
+      ctx.closePath();
+      ctx.fill();
+      ctx.lineWidth = 4 * scale;
+      ctx.strokeStyle = primaryHex;
+      ctx.stroke();
+
+      // Output Tray / Slot
+      const trayY = machineY + baseH / 2 - 32 * scale;
+      ctx.fillStyle = primaryHex;
+      ctx.beginPath();
+      ctx.roundRect(cx - 32 * scale, trayY, 64 * scale, 24 * scale, 12 * scale);
+      ctx.fill();
+
+      // Inner Dark Hole
+      ctx.fillStyle = 'rgba(0,0,0,0.15)';
+      ctx.beginPath();
+      ctx.roundRect(cx - 24 * scale, trayY + 4 * scale, 48 * scale, 16 * scale, 8 * scale);
+      ctx.fill();
+
+      // Handle Knob Base & Rotating Dial
+      const knobY = machineY - 8 * scale;
+      ctx.fillStyle = primaryHex;
+      ctx.beginPath();
+      ctx.arc(cx, knobY, 26 * scale, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 3 * scale;
+      ctx.stroke();
+
+      // Rotating Handle T-Bar
+      ctx.save();
+      ctx.translate(cx, knobY);
+      ctx.rotate(knobAngle);
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.roundRect(-22 * scale, -6 * scale, 44 * scale, 12 * scale, 6 * scale);
+      ctx.fill();
+      ctx.strokeStyle = primaryHex;
+      ctx.lineWidth = 2 * scale;
+      ctx.stroke();
+      ctx.restore();
+
+      // Dropped Capsule Pop Animation
+      if (droppedCapsule && spinAnimProgress > 0.4) {
+        const dropFactor = Math.min((spinAnimProgress - 0.4) / 0.6, 1);
+        const capY = trayY + 8 * scale + dropFactor * 25 * scale;
+        const capScale = (14 + dropFactor * 10) * scale;
+        const capAngle = dropFactor * Math.PI * 2;
+
+        drawCapsule(cx, capY, capScale, droppedCapsule.color, capAngle);
+      }
+
+      requestAnimationFrame(renderLoop);
+    }
+
+    async function renderOverviewCanvas() {
+      const cvs = document.getElementById('overviewCanvas');
+      const oCtx = cvs.getContext('2d');
+
+      const width = 1200;
+      const theme = THEMES[currentThemeKey];
+
+      const rarities = ['UR', 'SSR', 'SR', 'R', 'N'];
+      const grouped = {};
+      rarities.forEach(r => grouped[r] = items.filter(it => it.rarity === r));
+      const activeRarities = rarities.filter(r => grouped[r].length > 0);
+
+      const gap = 24;
+      const sideMargin = 50;
+      const contentWidth = width - (sideMargin * 2);
+
+      // 外部画像等のCORS汚染（tainted canvas）でtoDataURL/toBlobが落ちるのを防ぐ安全な読み込み
+      const loadedImages = {};
+      for (const item of items) {
+        if (item.image) {
+          if (item.image.startsWith('data:image/')) {
+            loadedImages[item.id] = await new Promise(resolve => {
+              const img = new Image();
+              img.onload = () => resolve(img);
+              img.onerror = () => resolve(null);
+              img.src = item.image;
+            });
+          } else {
+            try {
+              const res = await fetch(item.image, { mode: 'cors' });
+              if (res.ok) {
+                const blob = await res.blob();
+                const objectUrl = URL.createObjectURL(blob);
+                const img = await new Promise(resolve => {
+                  const i = new Image();
+                  i.onload = () => resolve(i);
+                  i.onerror = () => resolve(null);
+                  i.src = objectUrl;
+                });
+                if (img) loadedImages[item.id] = img;
+              }
+            } catch (e) {
+              console.warn('CORS restriction on image, skipping canvas render to avoid taint:', item.image, e);
+            }
+          }
+        }
+      }
+
+      oCtx.font = '900 18px "M PLUS Rounded 1c", sans-serif';
+
+      const headerTopPadding = 50;
+      const headerH = 140;
+      const badgeH = 46;
+      const badgeMarginBottom = 20;
+      const sectionMarginBottom = 40;
+      const footerH = 60;
+      const bottomPadding = 50;
+
+      const sectionLayouts = [];
+
+      for (const r of activeRarities) {
+        const list = grouped[r];
+        // アイテム数が多い場合は列数を増やして極端な縦長（メモリオーバーフロー）を防ぐ
+        const cols = list.length >= 8 ? 4 : 3;
+
+        const cardW = (contentWidth - (cols - 1) * gap) / cols;
+        const imgSize = Math.min(cardW - 24, cols === 4 ? 140 : 180);
+        const textMaxWidth = cardW - 24;
+
+        const itemCards = list.map(item => {
+          let words = item.name.split('');
+          let line = '';
+          let lines = [];
+          for (let n = 0; n < words.length; n++) {
+            let testLine = line + words[n];
+            let metrics = oCtx.measureText(testLine);
+            if (metrics.width > textMaxWidth && n > 0) {
+              lines.push(line);
+              line = words[n];
+            } else {
+              line = testLine;
+            }
+          }
+          lines.push(line);
+
+          const textH = lines.length * 24;
+          const cardH = 16 + imgSize + 12 + textH + 16;
+
+          return { item, lines, cardH, imgSize };
+        });
+
+        const rows = [];
+        for (let i = 0; i < itemCards.length; i += cols) {
+          const rowCards = itemCards.slice(i, i + cols);
+          const maxRowH = Math.max(...rowCards.map(c => c.cardH));
+          rows.push({ cards: rowCards, rowH: maxRowH });
+        }
+
+        const rowsTotalH = rows.reduce((sum, row) => sum + row.rowH, 0) + Math.max(0, rows.length - 1) * gap;
+        const sectionH = badgeH + badgeMarginBottom + rowsTotalH;
+
+        sectionLayouts.push({ rarity: r, cols, cardW, rows, sectionH });
+      }
+
+      const totalSectionsH = sectionLayouts.reduce((sum, sec) => sum + sec.sectionH, 0) + Math.max(0, sectionLayouts.length - 1) * sectionMarginBottom;
+      const height = Math.ceil(headerTopPadding + headerH + 40 + totalSectionsH + footerH + bottomPadding);
+
+      cvs.width = width;
+      cvs.height = height;
+
+      oCtx.fillStyle = '#ffffff';
+      oCtx.fillRect(0, 0, width, height);
+
+      const headerY = headerTopPadding;
+
+      oCtx.fillStyle = theme.primary;
+      oCtx.beginPath();
+      if (oCtx.roundRect) oCtx.roundRect(sideMargin, headerY, contentWidth, headerH, 28);
+      else oCtx.fillRect(sideMargin, headerY, contentWidth, headerH);
+      oCtx.fill();
+
+      oCtx.strokeStyle = theme.accent;
+      oCtx.lineWidth = 4;
+      oCtx.stroke();
+
+      oCtx.fillStyle = '#ffffff';
+      oCtx.font = '900 42px "M PLUS Rounded 1c", sans-serif';
+      oCtx.textAlign = 'center';
+      oCtx.textBaseline = 'middle';
+      oCtx.fillText(gachaTitle, width / 2, headerY + 52);
+
+      oCtx.fillStyle = '#ffffff';
+      oCtx.font = '800 20px "M PLUS Rounded 1c", sans-serif';
+      oCtx.fillText('★ 景品ラインナップ一覧 ★', width / 2, headerY + 100);
+
+      let currentY = headerY + headerH + 40;
+
+      for (const section of sectionLayouts) {
+        const rConfig = RARITY_CONFIG[section.rarity];
+
+        const badgeW = 180;
+        oCtx.fillStyle = rConfig.badgeBg;
+        oCtx.beginPath();
+        if (oCtx.roundRect) oCtx.roundRect(sideMargin, currentY, badgeW, badgeH, 16);
+        else oCtx.fillRect(sideMargin, currentY, badgeW, badgeH);
+        oCtx.fill();
+
+        oCtx.fillStyle = '#ffffff';
+        oCtx.font = '900 22px "M PLUS Rounded 1c", sans-serif';
+        oCtx.textAlign = 'center';
+        oCtx.textBaseline = 'middle';
+        oCtx.fillText(rConfig.label, sideMargin + badgeW / 2, currentY + badgeH / 2);
+
+        currentY += badgeH + badgeMarginBottom;
+
+        for (const row of section.rows) {
+          const rowHeight = row.rowH;
+
+          for (let colIdx = 0; colIdx < row.cards.length; colIdx++) {
+            const cardData = row.cards[colIdx];
+            const item = cardData.item;
+
+            const cardX = sideMargin + colIdx * (section.cardW + gap);
+            const cardY = currentY;
+
+            oCtx.fillStyle = '#ffffff';
+            oCtx.beginPath();
+            if (oCtx.roundRect) oCtx.roundRect(cardX, cardY, section.cardW, rowHeight, 22);
+            else oCtx.fillRect(cardX, cardY, section.cardW, rowHeight);
+            oCtx.fill();
+
+            oCtx.strokeStyle = theme.primary;
+            oCtx.lineWidth = 3;
+            oCtx.stroke();
+
+            const imgSize = cardData.imgSize;
+            const imgX = cardX + (section.cardW - imgSize) / 2;
+            const imgY = cardY + 16;
+
+            oCtx.fillStyle = '#ffffff';
+            oCtx.beginPath();
+            if (oCtx.roundRect) oCtx.roundRect(imgX, imgY, imgSize, imgSize, 18);
+            else oCtx.fillRect(imgX, imgY, imgSize, imgSize);
+            oCtx.fill();
+
+            if (loadedImages[item.id]) {
+              const img = loadedImages[item.id];
+              const imgRatio = img.width / img.height;
+              let drawW = imgSize;
+              let drawH = imgSize;
+
+              if (imgRatio > 1) {
+                drawH = imgSize / imgRatio;
+              } else {
+                drawW = imgSize * imgRatio;
+              }
+
+              const drawX = imgX + (imgSize - drawW) / 2;
+              const drawY = imgY + (imgSize - drawH) / 2;
+
+              oCtx.save();
+              oCtx.beginPath();
+              if (oCtx.roundRect) oCtx.roundRect(imgX, imgY, imgSize, imgSize, 18);
+              else oCtx.fillRect(imgX, imgY, imgSize, imgSize);
+              oCtx.clip();
+              oCtx.drawImage(img, drawX, drawY, drawW, drawH);
+              oCtx.restore();
+            } else {
+              oCtx.fillStyle = theme.accent;
+              oCtx.font = '900 32px "M PLUS Rounded 1c", sans-serif';
+              oCtx.textAlign = 'center';
+              oCtx.textBaseline = 'middle';
+              oCtx.fillText(item.rarity, imgX + imgSize / 2, imgY + imgSize / 2);
+            }
+
+            oCtx.strokeStyle = theme.primary;
+            oCtx.lineWidth = 2;
+            oCtx.beginPath();
+            if (oCtx.roundRect) oCtx.roundRect(imgX, imgY, imgSize, imgSize, 18);
+            else oCtx.fillRect(imgX, imgY, imgSize, imgSize);
+            oCtx.stroke();
+
+            const textY = imgY + imgSize + 12;
+            oCtx.fillStyle = theme.primary;
+            oCtx.font = '900 18px "M PLUS Rounded 1c", sans-serif';
+            oCtx.textAlign = 'center';
+            oCtx.textBaseline = 'top';
+
+            cardData.lines.forEach((l, idx) => {
+              oCtx.fillText(l, cardX + section.cardW / 2, textY + idx * 24);
+            });
+          }
+
+          currentY += rowHeight + gap;
+        }
+
+        currentY = currentY - gap + sectionMarginBottom;
+      }
+
+      oCtx.fillStyle = theme.accent;
+      oCtx.font = '800 16px "M PLUS Rounded 1c", sans-serif';
+      oCtx.textAlign = 'center';
+      oCtx.textBaseline = 'bottom';
+      oCtx.fillText('★ Created with Gacha Studio X-SHARE PRO ★', width / 2, height - 20);
+    }
+
+    function openOverviewModal() {
+      if (items.length === 0) {
+        showToast('景品が登録されていません', 'error');
+        return;
+      }
+      renderOverviewCanvas();
+      const modal = document.getElementById('overviewModal');
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+      document.getElementById('overviewModalContent').classList.remove('scale-95');
+    }
+
+    function closeOverviewModal() {
+      const modal = document.getElementById('overviewModal');
+      modal.classList.add('opacity-0', 'pointer-events-none');
+      document.getElementById('overviewModalContent').classList.add('scale-95');
+    }
+
+    function downloadOverviewImage() {
+      try {
+        const cvs = document.getElementById('overviewCanvas');
+        if (!cvs) {
+          showToast('キャンバスが見つかりません', 'error');
+          return;
+        }
+
+        // toBlob を利用して大容量画像生成時のメモリクラッシュを防止
+        if (cvs.toBlob) {
+          cvs.toBlob((blob) => {
+            if (!blob) {
+              showToast('画像の生成に失敗しました（サイズが大きすぎる可能性があります）', 'error');
+              return;
+            }
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.download = `${gachaTitle}_ラインナップ.png`;
+            link.href = url;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            setTimeout(() => URL.revokeObjectURL(url), 2000);
+            showToast('お品書き画像を保存しました！');
+          }, 'image/png');
+        } else {
+          // フォールバック
+          const dataUrl = cvs.toDataURL('image/png');
+          const link = document.createElement('a');
+          link.download = `${gachaTitle}_ラインナップ.png`;
+          link.href = dataUrl;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          showToast('お品書き画像を保存しました！');
+        }
+      } catch (err) {
+        console.error('PNG save error:', err);
+        showToast('画像の保存に失敗しました（画像サイズ超過またはCORS制限の可能性があります）', 'error');
+      }
+    }
+
+    function shareOverviewToX() {
+      const text = encodeURIComponent(`【${gachaTitle}】の景品一覧・お品書きです！ #GachaStudio`);
+      window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
+    }
+
+    function showResultModal(results) {
+      const modal = document.getElementById('resultModal');
+      const container = document.getElementById('resultItemsContainer');
+      const bulkTextarea = document.getElementById('bulkMessageTextarea');
+
+      container.innerHTML = '';
+      let bulkMsg = `【${gachaTitle} 結果 (${results.length}連)】\n`;
+
+      results.forEach((item) => {
+        const itemMsg = formatListenerMessage(item);
+        bulkMsg += `------------------------\n${itemMsg}\n`;
+
+        let imgHtml = item.image 
+          ? `<div class="w-10 h-10 rounded-xl shrink-0 border-2 theme-border bg-white flex items-center justify-center overflow-hidden p-0.5 shadow-xs"><img src="${item.image}" alt="preview" class="max-w-full max-h-full object-contain rounded-lg"></div>`
+          : `<div class="w-10 h-10 rounded-xl shrink-0 border-2 theme-border theme-bg-sub flex items-center justify-center theme-text-primary shadow-xs"><i class="fa-regular fa-image text-lg"></i></div>`;
+
+        const card = document.createElement('div');
+        card.className = 'p-3 bg-white rounded-2xl border-2 theme-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs';
+        card.innerHTML = `
+          <div class="flex items-center gap-3 overflow-hidden w-full">
+            <span class="px-3 py-1.5 text-xs rounded-xl shrink-0 rarity-badge flex items-center gap-1 shadow-xs">
+              <i class="${RARITY_CONFIG[item.rarity].iconClass}"></i> ${RARITY_CONFIG[item.rarity].label}
+            </span>
+            ${imgHtml}
+            <div class="truncate flex-1 min-w-0">
+              <h4 class="font-bold text-xs truncate theme-text-primary" title="${item.name}">${item.name}</h4>
+              <p class="text-[10px] theme-text-primary opacity-80 truncate mt-0.5">${item.link || 'URL未指定'}</p>
+            </div>
+          </div>
+          <button onclick="copySingleMessage('${item.id}')" class="btn-flat px-3.5 py-2 btn-theme-secondary rounded-xl text-xs font-bold whitespace-nowrap shadow-xs self-end sm:self-auto shrink-0">
+            <i class="fa-regular fa-copy"></i> コピー
+          </button>
+        `;
+        container.appendChild(card);
+      });
+
+      bulkTextarea.value = bulkMsg.trim();
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+      document.getElementById('resultModalContent').classList.remove('scale-95');
+    }
+
+    function closeResultModal() {
+      const modal = document.getElementById('resultModal');
+      modal.classList.add('opacity-0', 'pointer-events-none');
+      document.getElementById('resultModalContent').classList.add('scale-95');
+    }
+
+    function formatListenerMessage(item) {
+      return msgTemplate
+        .replace(/\{rarity\}/g, RARITY_CONFIG[item.rarity].label)
+        .replace(/\{name\}/g, item.name)
+        .replace(/\{link\}/g, item.link || 'URL未指定');
+    }
+
+    function copySingleMessage(itemId) {
+      const item = lastPulledResults.find(r => r.id === itemId) || items.find(i => i.id === itemId);
+      if (!item) return;
+      copyToClipboard(formatListenerMessage(item), '個別リンクをコピーしました！');
+    }
+
+    function copyBulkListenerMessage() {
+      copyToClipboard(document.getElementById('bulkMessageTextarea').value, 'すべての結果をコピーしました！');
+    }
+
+    function shareToX() {
+      const text = document.getElementById('bulkMessageTextarea').value;
+      if (!text) {
+        showToast('ポストする内容がありません', 'error');
+        return;
+      }
+      const encodedText = encodeURIComponent(text);
+      window.open(`https://twitter.com/intent/tweet?text=${encodedText}`, '_blank');
+    }
+
+    function openTemplateModal() {
+      document.getElementById('tplInput').value = msgTemplate;
+      const modal = document.getElementById('templateModal');
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function closeTemplateModal() {
+      const modal = document.getElementById('templateModal');
+      modal.classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    function saveTemplateModal() {
+      const val = document.getElementById('tplInput').value.trim();
+      if (val) {
+        msgTemplate = val;
+        saveToLocalStorage();
+        showToast('テンプレートを保存しました');
+      }
+      closeTemplateModal();
+    }
+
+    window.onload = () => {
+      loadFromLocalStorage();
+      renderPaletteDots();
+      initCanvas();
+      updateItemListAndStats();
+    };
+  </script>
+</body>
+</html>
